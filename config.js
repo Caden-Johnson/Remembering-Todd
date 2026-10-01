@@ -11,7 +11,7 @@
 // Leaving these blank keeps the site in demo mode.
 
 window.MEMORIAL_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://vowmjlvacctqgakouepo.supabase.co",
+  supabaseAnonKey: "sb_publishable_ftHZCQvvXbyemqLuPumrzw_-TcsiT_-",
   storageBucket: "memorial-uploads"
 };
