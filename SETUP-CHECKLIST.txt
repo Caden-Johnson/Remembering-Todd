@@ -1,0 +1,17 @@
+TODD MEMORIAL — GO-LIVE CHECKLIST
+
+1. Create Supabase project
+2. Run supabase-setup.sql
+3. Paste Project URL + public browser key into config.js
+4. Create GitHub repo named remembering-todd
+5. Upload all site files to repository root
+6. Settings > Pages > Deploy from branch > main > /(root)
+7. Open live GitHub Pages URL
+8. Test story-only submission
+9. Test photo-only submission
+10. Confirm story in Supabase Table Editor
+11. Confirm photo in Supabase Storage
+12. Test site on phone over cellular data
+13. Generate QR code from FINAL live URL
+14. Test printed QR code with multiple phones
+15. Do not change URL after printing QR codes
