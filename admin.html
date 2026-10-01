@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Todd Memorial — Family Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<main class="shell">
+  <section id="loginView" class="login-wrap">
+    <div class="login-card">
+      <div class="eyebrow">FAMILY ACCESS</div>
+      <h1>Todd’s Memory Collection</h1>
+      <p>Enter the family password to view the private collection of stories and photographs.</p>
+
+      <form id="loginForm">
+        <label>
+          Password
+          <input id="password" type="password" autocomplete="current-password" required autofocus placeholder="Family password">
+        </label>
+        <button id="loginButton" type="submit">View memories</button>
+        <div id="loginMessage" class="message" role="status"></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="dashboardView" class="dashboard hidden">
+    <header>
+      <div>
+        <div class="eyebrow">PRIVATE FAMILY COLLECTION</div>
+        <h1>Todd’s Memory Collection</h1>
+      </div>
+      <div class="actions">
+        <button id="refreshButton" class="secondary">Refresh</button>
+        <button id="logoutButton" class="secondary">Lock</button>
+      </div>
+    </header>
+
+    <div class="notice">View only — submissions cannot be edited or deleted from this page.</div>
+
+    <div class="stats">
+      <div><strong id="submissionCount">0</strong> submissions</div>
+      <div><strong id="photoCount">0</strong> photos</div>
+    </div>
+
+    <div id="dashboardMessage" class="message left"></div>
+    <div id="memoryGrid" class="memory-grid"></div>
+  </section>
+</main>
+
+<script src="config.js?v=2"></script>
+<script src="admin-config.js?v=1"></script>
+<script src="admin.js?v=1"></script>
+</body>
+</html>
