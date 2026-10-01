@@ -4,6 +4,8 @@ const previewGrid = document.getElementById("previewGrid");
 const submitButton = document.getElementById("submitButton");
 const formMessage = document.getElementById("formMessage");
 const submissionPaused = document.getElementById("submissionPaused");
+const submissionSuccess = document.getElementById("submissionSuccess");
+const submitAnotherButton = document.getElementById("submitAnotherButton");
 
 const MAX_FILES = 8;
 const MAX_FILE_MB = 15;
@@ -49,8 +51,13 @@ async function loadSubmissionStatus() {
     submissionsOpen = true;
   }
 
-  form.classList.toggle("hidden", !submissionsOpen);
-  submissionPaused?.classList.toggle("hidden", submissionsOpen);
+  const showingSuccess = submissionSuccess && !submissionSuccess.classList.contains("hidden");
+
+  if (!showingSuccess) {
+    form.classList.toggle("hidden", !submissionsOpen);
+    submissionPaused?.classList.toggle("hidden", submissionsOpen);
+  }
+
   return submissionsOpen;
 }
 
@@ -137,6 +144,20 @@ async function compressFiles(files) {
   return results;
 }
 
+submitAnotherButton?.addEventListener("click", async () => {
+  submissionSuccess?.classList.add("hidden");
+  form.reset();
+  previewGrid.innerHTML = "";
+  setMessage("");
+
+  const open = await loadSubmissionStatus();
+  if (open) {
+    form.classList.remove("hidden");
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("name")?.focus();
+  }
+});
+
 form.addEventListener("submit", async event => {
   event.preventDefault();
   setMessage("");
@@ -214,7 +235,13 @@ form.addEventListener("submit", async event => {
     localStorage.setItem("toddMemorialLastSubmit", String(Date.now()));
     form.reset();
     previewGrid.innerHTML = "";
-    setMessage("Thank you. Your memory has been saved for Todd’s family.", "success");
+    setMessage("");
+
+    form.classList.add("hidden");
+    submissionPaused?.classList.add("hidden");
+    submissionSuccess?.classList.remove("hidden");
+
+    submissionSuccess?.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (error) {
     console.error(error);
     setMessage("Something went wrong while saving this memory. Please try again.", "error");

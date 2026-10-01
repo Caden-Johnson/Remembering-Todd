@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261001b" />
+  <link rel="stylesheet" href="styles.css?v=20261001c" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -87,9 +87,15 @@
 
           <button id="submitButton" class="button button-dark" type="submit">Add to Todd’s memory collection</button>
           <p class="privacy-note">Your submission goes directly to Todd’s family. Nothing is posted publicly from this page.</p>
-          <p class="repeat-note">Have more than one memory? You’re welcome to submit again.</p>
           <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
         </form>
+
+        <div id="submissionSuccess" class="submission-success hidden" role="status" aria-live="polite">
+          <div class="success-icon">✓</div>
+          <h3>Thank you — your memory has been saved.</h3>
+          <p>Your story and photos were successfully sent to Todd’s family.</p>
+          <button id="submitAnotherButton" class="button button-dark success-button" type="button">Submit another memory</button>
+        </div>
       </div>
     </section>
 
@@ -107,6 +113,6 @@
   <footer><div class="wrap"><span>Remembering Todd Michael Johnson</span><span>1967–2026</span></div></footer>
 
   <script src="config.js?v=2"></script>
-  <script src="app.js?v=20261001a"></script>
+  <script src="app.js?v=20261001c"></script>
 </body>
 </html>
