@@ -19,3 +19,28 @@ input[type=text],textarea{width:100%;border:1px solid #cfd5d3;border-radius:12px
 
 @media(max-width:820px){.hero{min-height:390px}.hero-content{padding:54px 0 36px}.mountain-bg{height:72%}.share-grid{grid-template-columns:1fr;gap:42px}.share-copy{position:static}}
 @media(max-width:560px){.wrap{width:min(100% - 28px,1120px)}h1{font-size:clamp(2.1rem,10.5vw,3.25rem)}.hero{min-height:360px}.hero-content{padding:46px 0 32px}.hero-copy{font-size:.97rem;max-width:96%;margin:.95rem 0 1.25rem}.field-row{grid-template-columns:1fr;gap:0}.memory-form{padding:22px 18px;border-radius:17px}.preview-grid{grid-template-columns:repeat(3,1fr)}.share-section{padding:52px 0 64px}.closing-inner{padding:58px 0 66px}footer .wrap{flex-direction:column;justify-content:center;gap:4px;padding:14px 0;text-align:center}}
+
+.hero-actions{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.obituary-link{
+  color:rgba(255,255,255,.96);
+  text-decoration:none;
+  font-size:.94rem;
+  font-weight:700;
+  border-bottom:1px solid rgba(255,255,255,.55);
+  padding:4px 0 2px;
+}
+.obituary-link:hover{
+  border-bottom-color:#fff;
+}
+@media(max-width:560px){
+  .hero-actions{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:12px;
+  }
+}
