@@ -54,7 +54,7 @@ async function render(){
     for(const path of item.photo_paths||[]){const url=await signedUrl(path);if(url)urls.push(url)}
     const name=item.name?.trim()||"Anonymous",rel=item.relationship?.trim(),story=item.story?.trim();
     const card=document.createElement("article");card.className="memory-card";
-    card.innerHTML=`<div class="topline"><div><div class="person">${esc(name)}</div>${rel?`<div class="relationship">${esc(rel)}</div>`:""}</div><div class="date">${fmt(item.created_at)}</div></div>${story?`<p class="story">${esc(story)}</p>`:""}${urls.length?`<div class="photo-grid">${urls.map((u,i)=>`<a href="${u}" target="_blank" rel="noopener"><img loading="lazy" src="${u}" alt="Photo ${i+1} shared by ${esc(name)}"></a>`).join("")}</div>`:""}${currentRole==="owner"?`<div class="card-footer"><button class="delete-btn">Delete submission</button></div>`:""}`;
+    card.innerHTML=`<div class="topline"><div><div class="person">${esc(name)}</div>${rel?`<div class="relationship">${esc(rel)}</div>`:""}</div><div class="date">${fmt(item.created_at)}</div></div>${story?`<p class="story">${esc(story)}</p>`:""}${urls.length?`<div class="photo-grid">${urls.map((u,i)=>`<div class="photo-wrap"><a class="photo-link" href="${u}" target="_blank" rel="noopener"><img loading="lazy" src="${u}" alt="Photo ${i+1} shared by ${esc(name)}"></a><button class="photo-download" type="button" data-url="${u}" data-name="${esc((item.photo_paths||[])[i]?.split("/").pop() || `photo-${i+1}.jpg`)}">Download photo</button></div>`).join("")}</div>`:""}${currentRole==="owner"?`<div class="card-footer"><button class="delete-btn">Delete submission</button></div>`:""}`;
 
     if(currentRole==="owner"){
       const btn=card.querySelector(".delete-btn");
@@ -69,6 +69,33 @@ async function render(){
         }catch(err){console.error(err);alert("The submission could not be deleted.");btn.disabled=false;btn.textContent="Delete submission"}
       });
     }
+    card.querySelectorAll(".photo-download").forEach(button=>{
+      button.addEventListener("click", async ()=>{
+        const originalText=button.textContent;
+        button.disabled=true;
+        button.textContent="Downloading…";
+        try{
+          const response=await fetch(button.dataset.url);
+          if(!response.ok) throw new Error("Download failed");
+          const blob=await response.blob();
+          const objectUrl=URL.createObjectURL(blob);
+          const a=document.createElement("a");
+          a.href=objectUrl;
+          a.download=button.dataset.name || "todd-memory-photo.jpg";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(objectUrl);
+        }catch(err){
+          console.error(err);
+          window.open(button.dataset.url,"_blank","noopener");
+        }finally{
+          button.disabled=false;
+          button.textContent=originalText;
+        }
+      });
+    });
+
     $("memoryGrid").appendChild(card);
   }
 }
