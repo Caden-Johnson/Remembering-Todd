@@ -4,6 +4,38 @@ const previewGrid = document.getElementById("previewGrid");
 const submitButton = document.getElementById("submitButton");
 const formMessage = document.getElementById("formMessage");
 
+const submissionPaused = document.getElementById("submissionPaused");
+let submissionsOpen = true;
+
+async function loadSubmissionStatus() {
+  const cfg = window.MEMORIAL_CONFIG || {};
+  if (!(cfg.supabaseUrl && cfg.supabaseAnonKey)) return;
+
+  try {
+    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    const { data, error } = await client
+      .from("memorial_settings")
+      .select("submissions_open")
+      .eq("id", "site")
+      .maybeSingle();
+
+    if (error || !data) return;
+
+    submissionsOpen = data.submissions_open !== false;
+    if (!submissionsOpen) {
+      form.classList.add("hidden");
+      submissionPaused?.classList.remove("hidden");
+    } else {
+      form.classList.remove("hidden");
+      submissionPaused?.classList.add("hidden");
+    }
+  } catch (error) {
+    console.warn("Could not load submission status.", error);
+  }
+}
+
+loadSubmissionStatus();
+
 const MAX_FILES = 8;
 const MAX_FILE_MB = 15;
 const MAX_IMAGE_DIMENSION = 2200;
@@ -101,6 +133,12 @@ async function compressFiles(files) {
 form.addEventListener("submit", async event => {
   event.preventDefault();
   setMessage("");
+
+  await loadSubmissionStatus();
+  if (!submissionsOpen) {
+    setMessage("Memory submissions are temporarily paused.", "error");
+    return;
+  }
 
   const name = document.getElementById("name").value.trim();
   const relationship = document.getElementById("relationship").value.trim();

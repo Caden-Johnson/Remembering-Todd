@@ -8,7 +8,7 @@ let signedUrlCache=new Map();
 
 function esc(v=""){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function showLogin(msg=""){currentRole=null;$("dashboardView").classList.add("hidden");$("loginView").classList.remove("hidden");$("loginMessage").textContent=msg;$("password").value=""}
-function showDash(role){currentRole=role;$("loginView").classList.add("hidden");$("dashboardView").classList.remove("hidden");$("roleBadge").textContent=role==="owner"?"Owner access":"Family view";$("modeNotice").textContent=role==="owner"?"Owner mode — you can view, export, and permanently delete submissions.":"View only — submissions cannot be edited or deleted from this login.";$("exportButton").classList.toggle("hidden",role!=="owner")}
+function showDash(role){currentRole=role;$("loginView").classList.add("hidden");$("dashboardView").classList.remove("hidden");$("roleBadge").textContent=role==="owner"?"Owner access":"Family view";$("modeNotice").textContent=role==="owner"?"Owner mode — you can view, export, and permanently delete submissions.":"View only — submissions cannot be edited or deleted from this login.";$("exportButton").classList.toggle("hidden",role!=="owner");$("ownerControls")?.classList.toggle("hidden",role!=="owner")}
 function fmt(v){return new Intl.DateTimeFormat(undefined,{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(v))}
 async function getRole(){const {data,error}=await db.rpc("get_memorial_role");return error?null:(data||null)}
 
@@ -100,6 +100,72 @@ async function render(){
   }
 }
 
+
+function publicMemorialUrl(){
+  const url = new URL(window.location.href);
+  url.pathname = url.pathname.replace(/admin\.html$/, "");
+  url.search = "";
+  url.hash = "";
+  return url.toString();
+}
+
+function setOwnerControlMessage(text){
+  const el=$("ownerControlMessage");
+  if(!el) return;
+  el.textContent=text;
+  clearTimeout(setOwnerControlMessage._timer);
+  setOwnerControlMessage._timer=setTimeout(()=>{el.textContent=""},3500);
+}
+
+async function copyText(text,label){
+  try{
+    await navigator.clipboard.writeText(text);
+    setOwnerControlMessage(`${label} copied.`);
+  }catch(_){
+    prompt(`Copy ${label.toLowerCase()}:`,text);
+  }
+}
+
+async function loadSiteSettings(){
+  if(currentRole!=="owner") return;
+  const {data,error}=await db.from("memorial_settings").select("submissions_open").eq("id","site").maybeSingle();
+  if(error||!data){
+    setOwnerControlMessage("Could not load submission controls.");
+    return;
+  }
+  const open=data.submissions_open!==false;
+  const pill=$("submissionStatusPill");
+  pill.textContent=open?"Submissions open":"Submissions paused";
+  pill.className=`status-pill ${open?"open":"paused"}`;
+  $("toggleSubmissionsTitle").textContent=open?"Pause submissions":"Reopen submissions";
+  $("toggleSubmissionsButton").dataset.open=open?"true":"false";
+  $("toggleSubmissionsButton").querySelector(".control-icon").textContent=open?"⏸":"▶";
+}
+
+async function toggleSubmissions(){
+  if(currentRole!=="owner") return;
+  const button=$("toggleSubmissionsButton");
+  const isOpen=button.dataset.open!=="false";
+  const next=!isOpen;
+  const wording=next?"reopen":"pause";
+  if(!confirm(`Are you sure you want to ${wording} public memory submissions?`)) return;
+
+  button.disabled=true;
+  const {error}=await db.from("memorial_settings").update({
+    submissions_open:next,
+    updated_at:new Date().toISOString()
+  }).eq("id","site");
+  button.disabled=false;
+
+  if(error){
+    console.error(error);
+    setOwnerControlMessage("Could not change submission status.");
+    return;
+  }
+  setOwnerControlMessage(next?"Public submissions reopened.":"Public submissions paused.");
+  await loadSiteSettings();
+}
+
 async function load(){
   $("dashboardMessage").textContent="Loading memories…";
   const {data,error}=await db.from("memory_submissions").select("id,submission_id,name,relationship,story,photo_paths,created_at").order("created_at",{ascending:false});
@@ -126,14 +192,20 @@ $("loginForm").addEventListener("submit",async e=>{
   if(!role){await db.auth.signOut();role=await tryLogin(adminCfg.viewerEmail,password)}
   $("loginButton").disabled=false;$("loginButton").textContent="View memories";
   if(!role){$("password").select();$("loginMessage").textContent="Incorrect password.";return}
-  $("password").value="";showDash(role);await load();
+  $("password").value="";showDash(role);await load();await loadSiteSettings();
 });
 
 $("logoutButton").addEventListener("click",async()=>{await db.auth.signOut();showLogin()});
-$("refreshButton").addEventListener("click",()=>{signedUrlCache.clear();load()});
+$("refreshButton").addEventListener("click",async()=>{signedUrlCache.clear();await load();await loadSiteSettings()});
 $("searchInput").addEventListener("input",render);
 $("photoFilter").addEventListener("change",render);
 $("sortSelect").addEventListener("change",render);
+
+
+$("toggleSubmissionsButton")?.addEventListener("click",toggleSubmissions);
+$("copyMemorialButton")?.addEventListener("click",()=>copyText(publicMemorialUrl(),"Memorial link"));
+$("openMemorialButton")?.addEventListener("click",()=>window.open(publicMemorialUrl(),"_blank","noopener"));
+$("copyObituaryButton")?.addEventListener("click",()=>copyText("https://www.toddjohnsonmemorial.com/","Obituary link"));
 
 $("exportButton").addEventListener("click",()=>{
   if(currentRole!=="owner")return;

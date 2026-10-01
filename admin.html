@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=4">
+  <link rel="stylesheet" href="admin.css?v=6">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -18,6 +18,10 @@
       <div class="eyebrow">FAMILY ACCESS</div>
       <h1>Todd’s Memory Collection</h1>
       <p>Enter the family password to view the private collection of stories and photographs.</p>
+      <div class="family-warning">
+        <strong>Family access only</strong>
+        <span>Please don’t share this admin page or family password outside the family.</span>
+      </div>
       <form id="loginForm">
         <label>Password<input id="password" type="password" autocomplete="off" required autofocus placeholder="Family password"></label>
         <button id="loginButton" type="submit">View memories</button>
@@ -43,6 +47,40 @@
     </header>
 
     <div id="modeNotice" class="notice"></div>
+
+    <section id="ownerControls" class="owner-controls hidden">
+      <div class="owner-controls-head">
+        <div>
+          <div class="eyebrow">OWNER CONTROLS</div>
+          <h2>Service controls</h2>
+        </div>
+        <div id="submissionStatusPill" class="status-pill open">Submissions open</div>
+      </div>
+
+      <div class="control-grid">
+        <button id="toggleSubmissionsButton" class="control-card" type="button">
+          <span class="control-icon">⏸</span>
+          <span><strong id="toggleSubmissionsTitle">Pause submissions</strong><small>Temporarily stop the public form if needed.</small></span>
+        </button>
+
+        <button id="copyMemorialButton" class="control-card" type="button">
+          <span class="control-icon">⧉</span>
+          <span><strong>Copy memorial link</strong><small>Copy the public memory-collection URL.</small></span>
+        </button>
+
+        <button id="openMemorialButton" class="control-card" type="button">
+          <span class="control-icon">↗</span>
+          <span><strong>Open public memorial</strong><small>Quickly check what guests are seeing.</small></span>
+        </button>
+
+        <button id="copyObituaryButton" class="control-card" type="button">
+          <span class="control-icon">⧉</span>
+          <span><strong>Copy obituary link</strong><small>Copy toddjohnsonmemorial.com.</small></span>
+        </button>
+      </div>
+
+      <div id="ownerControlMessage" class="owner-control-message" role="status"></div>
+    </section>
 
     <div class="stats">
       <div><strong id="submissionCount">0</strong> submissions</div>
@@ -71,6 +109,6 @@
 
 <script src="config.js?v=2"></script>
 <script src="admin-config.js?v=2"></script>
-<script src="admin.js?v=3"></script>
+<script src="admin.js?v=5"></script>
 </body>
 </html>
