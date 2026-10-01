@@ -3,38 +3,7 @@ const photoInput = document.getElementById("photos");
 const previewGrid = document.getElementById("previewGrid");
 const submitButton = document.getElementById("submitButton");
 const formMessage = document.getElementById("formMessage");
-
 const submissionPaused = document.getElementById("submissionPaused");
-let submissionsOpen = true;
-
-async function loadSubmissionStatus() {
-  const cfg = window.MEMORIAL_CONFIG || {};
-  if (!(cfg.supabaseUrl && cfg.supabaseAnonKey)) return;
-
-  try {
-    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
-    const { data, error } = await client
-      .from("memorial_settings")
-      .select("submissions_open")
-      .eq("id", "site")
-      .maybeSingle();
-
-    if (error || !data) return;
-
-    submissionsOpen = data.submissions_open !== false;
-    if (!submissionsOpen) {
-      form.classList.add("hidden");
-      submissionPaused?.classList.remove("hidden");
-    } else {
-      form.classList.remove("hidden");
-      submissionPaused?.classList.add("hidden");
-    }
-  } catch (error) {
-    console.warn("Could not load submission status.", error);
-  }
-}
-
-loadSubmissionStatus();
 
 const MAX_FILES = 8;
 const MAX_FILE_MB = 15;
@@ -45,15 +14,53 @@ const MIN_FORM_SECONDS = 2;
 const SUBMIT_COOLDOWN_MS = 15000;
 const formOpenedAt = Date.now();
 
+let submissionsOpen = true;
+
 function setMessage(text, type = "") {
   formMessage.textContent = text;
   formMessage.className = `form-message ${type}`.trim();
 }
 
+function createClient() {
+  const cfg = window.MEMORIAL_CONFIG || {};
+  if (!(cfg.supabaseUrl && cfg.supabaseAnonKey)) return null;
+  return window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+}
+
+async function loadSubmissionStatus() {
+  const client = createClient();
+  if (!client) return true;
+
+  try {
+    const { data, error } = await client
+      .from("memorial_settings")
+      .select("submissions_open")
+      .eq("id", "site")
+      .maybeSingle();
+
+    if (error || !data) {
+      console.warn("Submission status unavailable:", error);
+      submissionsOpen = true;
+    } else {
+      submissionsOpen = data.submissions_open !== false;
+    }
+  } catch (error) {
+    console.warn("Could not load submission status:", error);
+    submissionsOpen = true;
+  }
+
+  form.classList.toggle("hidden", !submissionsOpen);
+  submissionPaused?.classList.toggle("hidden", submissionsOpen);
+  return submissionsOpen;
+}
+
+loadSubmissionStatus();
+
 photoInput.addEventListener("change", () => {
   previewGrid.innerHTML = "";
   const files = Array.from(photoInput.files || []).slice(0, MAX_FILES);
   setMessage((photoInput.files || []).length > MAX_FILES ? `Please choose no more than ${MAX_FILES} photos.` : "", (photoInput.files || []).length > MAX_FILES ? "error" : "");
+
   files.forEach(file => {
     const url = URL.createObjectURL(file);
     const img = document.createElement("img");
@@ -134,8 +141,8 @@ form.addEventListener("submit", async event => {
   event.preventDefault();
   setMessage("");
 
-  await loadSubmissionStatus();
-  if (!submissionsOpen) {
+  const stillOpen = await loadSubmissionStatus();
+  if (!stillOpen) {
     setMessage("Memory submissions are temporarily paused.", "error");
     return;
   }
@@ -147,8 +154,8 @@ form.addEventListener("submit", async event => {
   const honeypot = document.getElementById("website")?.value.trim();
   const originalFiles = Array.from(photoInput.files || []);
 
-  // Quietly stop basic automated spam.
   if (honeypot) return;
+
   if ((Date.now() - formOpenedAt) / 1000 < MIN_FORM_SECONDS) {
     setMessage("Please wait a moment and try submitting again.", "error");
     return;
@@ -167,8 +174,8 @@ form.addEventListener("submit", async event => {
   const tooLarge = originalFiles.find(f => f.size > MAX_FILE_MB * 1024 * 1024);
   if (tooLarge) { setMessage(`${tooLarge.name} is larger than ${MAX_FILE_MB} MB.`, "error"); return; }
 
-  const cfg = window.MEMORIAL_CONFIG || {};
-  if (!(cfg.supabaseUrl && cfg.supabaseAnonKey)) {
+  const client = createClient();
+  if (!client) {
     setMessage("The memory collection is temporarily unavailable. Please try again later.", "error");
     return;
   }
@@ -177,9 +184,6 @@ form.addEventListener("submit", async event => {
 
   try {
     const files = await compressFiles(originalFiles);
-    submitButton.textContent = "Saving your memory…";
-
-    const supabase = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
     const submissionId = randomId();
     const uploaded = [];
 
@@ -188,8 +192,8 @@ form.addEventListener("submit", async event => {
       const file = files[i];
       const path = `${submissionId}/${randomId()}-${safeFileName(file.name)}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from(cfg.storageBucket || "memorial-uploads")
+      const { error: uploadError } = await client.storage
+        .from((window.MEMORIAL_CONFIG || {}).storageBucket || "memorial-uploads")
         .upload(path, file, { cacheControl:"3600", upsert:false, contentType:file.type || undefined });
 
       if (uploadError) throw uploadError;
@@ -197,7 +201,7 @@ form.addEventListener("submit", async event => {
     }
 
     submitButton.textContent = "Saving your memory…";
-    const { error: insertError } = await supabase.from("memory_submissions").insert({
+    const { error: insertError } = await client.from("memory_submissions").insert({
       submission_id: submissionId,
       name: name || null,
       relationship: relationship || null,

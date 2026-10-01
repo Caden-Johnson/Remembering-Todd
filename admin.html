@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6">
+  <link rel="stylesheet" href="admin.css?v=20261001a">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -22,11 +22,13 @@
         <strong>Family access only</strong>
         <span>Please don’t share this admin page or family password outside the family.</span>
       </div>
+
       <form id="loginForm">
         <label>Password<input id="password" type="password" autocomplete="off" required autofocus placeholder="Family password"></label>
         <button id="loginButton" type="submit">View memories</button>
         <div id="loginMessage" class="message" role="status"></div>
       </form>
+
       <p class="session-note">For privacy, this page locks again whenever it is refreshed or reopened.</p>
     </div>
   </section>
@@ -38,6 +40,7 @@
         <h1>Todd’s Memory Collection</h1>
         <blockquote class="admin-quote">“The goal is to not get lost in the depths of our sorrow” <span>— Maddy</span></blockquote>
       </div>
+
       <div class="actions">
         <span id="roleBadge" class="role-badge"></span>
         <button id="exportButton" class="secondary hidden">Export CSV</button>
@@ -54,7 +57,7 @@
           <div class="eyebrow">OWNER CONTROLS</div>
           <h2>Service controls</h2>
         </div>
-        <div id="submissionStatusPill" class="status-pill open">Submissions open</div>
+        <div id="submissionStatusPill" class="status-pill">Checking…</div>
       </div>
 
       <div class="control-grid">
@@ -109,5 +112,6 @@
 
 <script src="config.js?v=2"></script>
 <script src="admin-config.js?v=2"></script>
-<script src="admin.js?v=6"></script></body>
+<script src="admin.js?v=20261001a"></script>
+</body>
 </html>
