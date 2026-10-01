@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=3">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -19,10 +19,7 @@
       <h1>Todd’s Memory Collection</h1>
       <p>Enter the family password to view the private collection of stories and photographs.</p>
       <form id="loginForm">
-        <label>
-          Password
-          <input id="password" type="password" autocomplete="off" required autofocus placeholder="Family password">
-        </label>
+        <label>Password<input id="password" type="password" autocomplete="off" required autofocus placeholder="Family password"></label>
         <button id="loginButton" type="submit">View memories</button>
         <div id="loginMessage" class="message" role="status"></div>
       </form>
@@ -32,12 +29,10 @@
 
   <section id="dashboardView" class="dashboard hidden">
     <header>
-      <div>
-        <div class="eyebrow">PRIVATE FAMILY COLLECTION</div>
-        <h1>Todd’s Memory Collection</h1>
-      </div>
+      <div><div class="eyebrow">PRIVATE FAMILY COLLECTION</div><h1>Todd’s Memory Collection</h1></div>
       <div class="actions">
         <span id="roleBadge" class="role-badge"></span>
+        <button id="exportButton" class="secondary hidden">Export CSV</button>
         <button id="refreshButton" class="secondary">Refresh</button>
         <button id="logoutButton" class="secondary">Lock</button>
       </div>
@@ -50,6 +45,21 @@
       <div><strong id="photoCount">0</strong> photos</div>
     </div>
 
+    <div class="tools">
+      <input id="searchInput" type="search" placeholder="Search names, relationships, or stories…">
+      <select id="photoFilter" aria-label="Filter submissions">
+        <option value="all">All submissions</option>
+        <option value="photos">Has photos</option>
+        <option value="stories">Has story</option>
+        <option value="photo-only">Photo only</option>
+      </select>
+      <select id="sortSelect" aria-label="Sort submissions">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </div>
+
     <div id="dashboardMessage" class="message left"></div>
     <div id="memoryGrid" class="memory-grid"></div>
   </section>
@@ -57,6 +67,6 @@
 
 <script src="config.js?v=2"></script>
 <script src="admin-config.js?v=2"></script>
-<script src="admin.js?v=2"></script>
+<script src="admin.js?v=3"></script>
 </body>
 </html>

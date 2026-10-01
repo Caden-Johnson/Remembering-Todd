@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Remembering Todd Johnson</title>
   <meta name="description" content="Share a photo, story, or favorite memory of Todd Johnson with his family." />
+  <meta name="theme-color" content="#294a5e">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -18,27 +19,18 @@
       <div class="eyebrow">IN LOVING MEMORY</div>
       <h1>Todd Michael Johnson</h1>
       <div class="dates">1967 — 2026</div>
-      <p class="hero-copy">
-        Help us preserve the stories, photographs, and ordinary moments that made Todd who he was.
-      </p>
+      <p class="hero-copy">Help us preserve the stories, photographs, and ordinary moments that made Todd who he was.</p>
       <a class="button button-light" href="#share">Share a memory</a>
     </div>
   </header>
 
   <main>
     <section class="intro wrap">
-      <div class="intro-mark">T</div>
+      <div class="intro-mark" aria-hidden="true">T</div>
       <div>
         <h2>Remembering Todd</h2>
-        <p>
-          Todd showed his love through the way he showed up. He was curious, capable, independent,
-          and always ready to teach a life lesson or find a creative way to make something work.
-          He loved the outdoors, photography, family, and the simple rhythms of everyday life.
-        </p>
-        <p>
-          If you have a story, a photo, a funny moment, or even a small memory that captures who he
-          was to you, our family would be grateful to have it.
-        </p>
+        <p>Todd showed his love through the way he showed up. He was curious, capable, independent, and always ready to teach a life lesson or find a creative way to make something work. He loved the outdoors, photography, family, and the simple rhythms of everyday life.</p>
+        <p>If you have a story, a photo, a funny moment, or even a small memory that captures who he was to you, our family would be grateful to have it.</p>
       </div>
     </section>
 
@@ -53,51 +45,24 @@
         <div class="share-copy">
           <div class="eyebrow dark">SHARE A MEMORY</div>
           <h2>Tell us something you remember.</h2>
-          <p>
-            It can be meaningful, funny, ordinary, or brief. Upload a photo, write a few sentences,
-            or do both.
-          </p>
+          <p>It can be meaningful, funny, ordinary, or brief. Upload a photo, write a few sentences, or do both.</p>
 
           <div class="tips">
-            <div class="tip">
-              <span>01</span>
-              <div>
-                <strong>A favorite story</strong>
-                <p>A moment that still makes you smile or says something about who Todd was.</p>
-              </div>
-            </div>
-            <div class="tip">
-              <span>02</span>
-              <div>
-                <strong>A photo</strong>
-                <p>Old or new, posed or candid — especially images our family may not have.</p>
-              </div>
-            </div>
-            <div class="tip">
-              <span>03</span>
-              <div>
-                <strong>A few simple words</strong>
-                <p>You do not need to write much. Even one sentence can mean a great deal.</p>
-              </div>
-            </div>
+            <div class="tip"><span>01</span><div><strong>A favorite story</strong><p>A moment that still makes you smile or says something about who Todd was.</p></div></div>
+            <div class="tip"><span>02</span><div><strong>A photo</strong><p>Old or new, posed or candid — especially images our family may not have.</p></div></div>
+            <div class="tip"><span>03</span><div><strong>A few simple words</strong><p>You do not need to write much. Even one sentence can mean a great deal.</p></div></div>
           </div>
         </div>
 
-        <form id="memoryForm" class="memory-form">
+        <form id="memoryForm" class="memory-form" novalidate>
           <div class="field-row">
-            <label>
-              <span>Your name <em>optional</em></span>
-              <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" />
-            </label>
-            <label>
-              <span>How did you know Todd? <em>optional</em></span>
-              <input id="relationship" name="relationship" type="text" placeholder="Friend, coworker, neighbor..." />
-            </label>
+            <label><span>Your name <em>optional</em></span><input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" maxlength="200" /></label>
+            <label><span>How did you know Todd? <em>optional</em></span><input id="relationship" name="relationship" type="text" placeholder="Friend, coworker, neighbor..." maxlength="300" /></label>
           </div>
 
           <label>
             <span>Your memory or story</span>
-            <textarea id="story" name="story" rows="8" placeholder="Share a story, memory, or a few words about Todd..."></textarea>
+            <textarea id="story" name="story" rows="8" maxlength="12000" placeholder="Share a story, memory, or a few words about Todd..."></textarea>
           </label>
 
           <label class="upload-box" for="photos">
@@ -105,28 +70,26 @@
             <div>
               <strong>Add photos</strong>
               <p>Choose up to 8 photos from your phone or computer.</p>
+              <small>Photos are automatically optimized for easier upload while keeping good quality.</small>
             </div>
             <input id="photos" name="photos" type="file" accept="image/*" multiple />
           </label>
 
           <div id="previewGrid" class="preview-grid" aria-live="polite"></div>
 
+          <!-- Invisible honeypot: humans never fill this. -->
+          <div class="website-field" aria-hidden="true">
+            <label>Website<input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></label>
+          </div>
+
           <label class="consent">
             <input id="consent" type="checkbox" />
-            <span>
-              I’m comfortable with Todd’s family saving this submission and using it in a private
-              family collection or memorial materials.
-            </span>
+            <span>I’m comfortable with Todd’s family saving this submission and using it in a private family collection or memorial materials.</span>
           </label>
 
-          <button id="submitButton" class="button button-dark" type="submit">
-            Add to Todd’s memory collection
-          </button>
+          <button id="submitButton" class="button button-dark" type="submit">Add to Todd’s memory collection</button>
 
-          <p class="privacy-note">
-            Your submission goes directly to Todd’s family. Nothing is posted publicly from this page.
-          </p>
-
+          <p class="privacy-note">Your submission goes directly to Todd’s family. Nothing is posted publicly from this page.</p>
           <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
         </form>
       </div>
@@ -135,9 +98,7 @@
     <section class="closing">
       <div class="wrap closing-inner">
         <div class="mountain-line" aria-hidden="true">
-          <svg viewBox="0 0 1200 180" preserveAspectRatio="none">
-            <path d="M0 160 L115 88 L178 128 L306 38 L405 117 L516 62 L625 130 L760 52 L900 132 L1024 73 L1200 160" fill="none" stroke="currentColor" stroke-width="2"/>
-          </svg>
+          <svg viewBox="0 0 1200 180" preserveAspectRatio="none"><path d="M0 160 L115 88 L178 128 L306 38 L405 117 L516 62 L625 130 L760 52 L900 132 L1024 73 L1200 160" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         </div>
         <div class="eyebrow">THANK YOU FOR REMEMBERING HIM WITH US</div>
         <h2>Every story helps us see a little more of the life he lived.</h2>
@@ -145,14 +106,9 @@
     </section>
   </main>
 
-  <footer>
-    <div class="wrap">
-      <span>Remembering Todd Michael Johnson</span>
-      <span>1967–2026</span>
-    </div>
-  </footer>
+  <footer><div class="wrap"><span>Remembering Todd Michael Johnson</span><span>1967–2026</span></div></footer>
 
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="config.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
