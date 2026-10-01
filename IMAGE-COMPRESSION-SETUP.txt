@@ -1,0 +1,21 @@
+IMAGE COMPRESSION UPDATE
+
+Replace your existing app.js in the ROOT of your GitHub repository with the new app.js in this folder.
+
+What this update does:
+- Automatically resizes large uploaded images before sending them to Supabase
+- Converts photo uploads to optimized JPEG
+- Limits the longest side to 2200 px
+- Uses JPEG quality 0.86
+- Keeps tiny images and GIFs as-is
+- Usually reduces phone photos dramatically, often to around ~0.5 MB to ~2 MB each
+
+How to install:
+1. Go to your GitHub repo.
+2. Click app.js.
+3. Replace its contents with the new app.js file from this package, or upload and overwrite it.
+4. Commit the change.
+5. Wait about 1 minute for GitHub Pages to update.
+6. Test by uploading a large phone photo.
+
+No Supabase SQL changes are needed.
