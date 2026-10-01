@@ -151,15 +151,12 @@ async function toggleSubmissions(){
   if(!confirm(`Are you sure you want to ${wording} public memory submissions?`)) return;
 
   button.disabled=true;
-  const {error}=await db.from("memorial_settings").update({
-    submissions_open:next,
-    updated_at:new Date().toISOString()
-  }).eq("id","site");
+  const {data,error}=await db.rpc("set_memorial_submissions_open",{new_open:next});
   button.disabled=false;
 
   if(error){
     console.error(error);
-    setOwnerControlMessage("Could not change submission status.");
+    setOwnerControlMessage(`Could not change submission status: ${error.message || "permission error"}`);
     return;
   }
   setOwnerControlMessage(next?"Public submissions reopened.":"Public submissions paused.");
