@@ -9,11 +9,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=5" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <header class="hero">
+    <div class="mountain-bg" aria-hidden="true">
+      <svg viewBox="0 0 1600 420" preserveAspectRatio="none">
+        <path d="M0 360 L150 255 L245 300 L395 170 L520 270 L655 205 L770 292 L935 150 L1085 290 L1235 195 L1390 275 L1600 170 L1600 420 L0 420 Z"/>
+      </svg>
+    </div>
     <div class="hero-overlay"></div>
     <div class="hero-content wrap">
       <div class="eyebrow">IN LOVING MEMORY</div>
@@ -25,21 +30,6 @@
   </header>
 
   <main>
-    <section class="intro wrap">
-      <div class="intro-mark" aria-hidden="true">T</div>
-      <div>
-        <h2>Remembering Todd</h2>
-        <p>Todd showed his love through the way he showed up. He was curious, capable, independent, and always ready to teach a life lesson or find a creative way to make something work. He loved the outdoors, photography, family, and the simple rhythms of everyday life.</p>
-        <p>If you have a story, a photo, a funny moment, or even a small memory that captures who he was to you, our family would be grateful to have it.</p>
-      </div>
-    </section>
-
-    <section class="quote-band">
-      <div class="wrap quote-inner">
-        <p>“The stories we keep are one of the ways love continues to be present.”</p>
-      </div>
-    </section>
-
     <section id="share" class="share-section">
       <div class="wrap share-grid">
         <div class="share-copy">
@@ -77,7 +67,6 @@
 
           <div id="previewGrid" class="preview-grid" aria-live="polite"></div>
 
-          <!-- Invisible honeypot: humans never fill this. -->
           <div class="website-field" aria-hidden="true">
             <label>Website<input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></label>
           </div>
